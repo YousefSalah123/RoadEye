@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+/* ============================================
+   RoadEye — Vibrant Dark Mode Tokens
+   ============================================ */
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Core brand palette */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-400: #8b5cf6; /* Violet */
+  --color-brand-500: #7c3aed;
+  --color-brand-600: #6d28d9;
+
+  --color-surface: #000000;
+  --color-surface-light: #030712;
+  --color-surface-card: #030712;
+  --color-surface-hover: #111827;
+  --color-surface-border: rgba(139, 92, 246, 0.3);
+
+  --color-crack: #06b6d4; /* Electric Cyan */
+  --color-pothole: #ef4444; /* Bright Red */
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+}
+
+/* Base layer styles */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-surface);
+    color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-surface-hover);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #374151;
+  }
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .glass-card {
+    background: rgba(3, 7, 18, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.05);
+  }
+
+  .glow-brand {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4),
+      0 0 60px rgba(139, 92, 246, 0.2);
+  }
+
+  .glow-crack {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  }
+
+  .glow-pothole {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #a78bfa, #8b5cf6, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Toast animations */
+.toast-enter { animation: slideInRight 0.3s ease-out forwards; }
+.toast-exit { animation: fadeOut 0.3s ease-in forwards; }
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+/* Loading shimmer effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(3, 7, 18, 0) 0%,
+    rgba(139, 92, 246, 0.2) 50%,
+    rgba(3, 7, 18, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Leaflet Overrides */
+.leaflet-popup-content-wrapper {
+  background: rgba(3, 7, 18, 0.95) !important;
+  border: 1px solid rgba(139, 92, 246, 0.5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3) !important;
+}
+.leaflet-popup-tip {
+  background: rgba(3, 7, 18, 0.95) !important;
+  border-top: 1px solid rgba(139, 92, 246, 0.5) !important;
+  border-left: 1px solid rgba(139, 92, 246, 0.5) !important;
+}
+.road-eye-popup .text-slate-900 {
+  color: #f8fafc !important;
+}
