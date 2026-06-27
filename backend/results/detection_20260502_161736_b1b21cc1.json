@@ -1,0 +1,14 @@
+{
+  "detections": [
+    {
+      "class_id": 1,
+      "confidence_score": 0.8477582931518555,
+      "bounding_box": {
+        "x_min": 245,
+        "y_min": 404,
+        "x_max": 300,
+        "y_max": 460
+      }
+    }
+  ]
+}

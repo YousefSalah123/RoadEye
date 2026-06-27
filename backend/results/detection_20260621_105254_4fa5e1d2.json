@@ -1,0 +1,34 @@
+{
+  "detections": [
+    {
+      "class_id": 1,
+      "confidence_score": 0.8748027086257935,
+      "bounding_box": {
+        "x_min": 509,
+        "y_min": 622,
+        "x_max": 590,
+        "y_max": 694
+      }
+    },
+    {
+      "class_id": 1,
+      "confidence_score": 0.764772891998291,
+      "bounding_box": {
+        "x_min": 469,
+        "y_min": 562,
+        "x_max": 519,
+        "y_max": 609
+      }
+    },
+    {
+      "class_id": 1,
+      "confidence_score": 0.5650115013122559,
+      "bounding_box": {
+        "x_min": 460,
+        "y_min": 522,
+        "x_max": 498,
+        "y_max": 556
+      }
+    }
+  ]
+}

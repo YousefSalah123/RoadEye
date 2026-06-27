@@ -1,0 +1,74 @@
+{
+  "detections": [
+    {
+      "class_id": 1,
+      "confidence_score": 0.8766689896583557,
+      "bounding_box": {
+        "x_min": 229,
+        "y_min": 520,
+        "x_max": 326,
+        "y_max": 564
+      }
+    },
+    {
+      "class_id": 1,
+      "confidence_score": 0.7975659966468811,
+      "bounding_box": {
+        "x_min": 82,
+        "y_min": 532,
+        "x_max": 186,
+        "y_max": 585
+      }
+    },
+    {
+      "class_id": 0,
+      "confidence_score": 0.6988148093223572,
+      "bounding_box": {
+        "x_min": 37,
+        "y_min": 507,
+        "x_max": 95,
+        "y_max": 538
+      }
+    },
+    {
+      "class_id": 0,
+      "confidence_score": 0.6724410653114319,
+      "bounding_box": {
+        "x_min": 204,
+        "y_min": 444,
+        "x_max": 295,
+        "y_max": 522
+      }
+    },
+    {
+      "class_id": 0,
+      "confidence_score": 0.6420658230781555,
+      "bounding_box": {
+        "x_min": 320,
+        "y_min": 536,
+        "x_max": 599,
+        "y_max": 578
+      }
+    },
+    {
+      "class_id": 0,
+      "confidence_score": 0.5427027940750122,
+      "bounding_box": {
+        "x_min": 323,
+        "y_min": 534,
+        "x_max": 599,
+        "y_max": 596
+      }
+    },
+    {
+      "class_id": 0,
+      "confidence_score": 0.28063255548477173,
+      "bounding_box": {
+        "x_min": 13,
+        "y_min": 449,
+        "x_max": 48,
+        "y_max": 477
+      }
+    }
+  ]
+}
