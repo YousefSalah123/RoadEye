@@ -1,25 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Activity, AlertTriangle, Crosshair, Map as MapIcon, TrendingUp } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import 'leaflet/dist/leaflet.css';
+import CityMap from '../components/CityMap';
+import { getStats } from '../services/api';
 
-// Fix for default leaflet markers
-import L from 'leaflet';
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-const MOCK_STATS = {
-  totalDamages: 1423,
-  activeAlerts: 42,
+// Mock initial stats while loading
+const INITIAL_STATS = {
+  totalDamages: '...',
+  activeAlerts: '...',
   avgConfidence: 94.2,
 };
 
@@ -33,15 +21,35 @@ const CHART_DATA = [
   { day: 'Sun', cracks: 40, potholes: 10 },
 ];
 
-const MOCK_MARKERS = [
-  { id: 1, pos: [40.7128, -74.0060], type: 'Pothole', severity: 'High' },
-  { id: 2, pos: [40.7228, -74.0160], type: 'Crack', severity: 'Medium' },
-  { id: 3, pos: [40.7100, -73.9900], type: 'Pothole', severity: 'High' },
-  { id: 4, pos: [40.7300, -74.0000], type: 'Crack', severity: 'Low' },
-  { id: 5, pos: [40.7050, -74.0200], type: 'Pothole', severity: 'Medium' },
-];
+
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState(INITIAL_STATS);
+
+  useEffect(() => {
+    let active = true;
+    getStats()
+      .then((data) => {
+        if (active) {
+          setStats({
+            totalDamages: data.total_defects,
+            activeAlerts: data.severity?.High || 0,
+            avgConfidence: 94.2, // mock confidence placeholder
+          });
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load stats, using fallback mock:', err);
+        if (active) {
+          setStats({
+            totalDamages: 1423,
+            activeAlerts: 42,
+            avgConfidence: 94.2,
+          });
+        }
+      });
+    return () => { active = false; };
+  }, []);
   return (
     <div className="min-h-[calc(100vh-64px)] bg-surface">
       <header className="sticky top-0 z-30 flex items-center justify-between px-8 py-4 border-b border-surface-border bg-surface/80 backdrop-blur-md">
@@ -66,7 +74,7 @@ export default function DashboardPage() {
               <Crosshair className="w-16 h-16 text-brand-400" />
             </div>
             <p className="text-sm text-slate-400 font-medium mb-1">Total Damages Detected</p>
-            <p className="text-4xl font-black text-white tracking-tight">{MOCK_STATS.totalDamages.toLocaleString()}</p>
+            <p className="text-4xl font-black text-white tracking-tight">{typeof stats.totalDamages === 'number' ? stats.totalDamages.toLocaleString() : stats.totalDamages}</p>
             <div className="mt-4 flex items-center gap-2 text-xs text-brand-400 font-semibold bg-brand-500/10 w-max px-2 py-1 rounded-md">
               <TrendingUp className="w-3 h-3" /> +12% this week
             </div>
@@ -77,7 +85,7 @@ export default function DashboardPage() {
               <AlertTriangle className="w-16 h-16 text-red-500" />
             </div>
             <p className="text-sm text-slate-400 font-medium mb-1">Active High-Priority Alerts</p>
-            <p className="text-4xl font-black text-white tracking-tight">{MOCK_STATS.activeAlerts}</p>
+            <p className="text-4xl font-black text-white tracking-tight">{stats.activeAlerts}</p>
             <div className="mt-4 flex items-center gap-2 text-xs text-red-400 font-semibold bg-red-500/10 w-max px-2 py-1 rounded-md">
               Requires immediate action
             </div>
@@ -88,7 +96,7 @@ export default function DashboardPage() {
               <Activity className="w-16 h-16 text-success" />
             </div>
             <p className="text-sm text-slate-400 font-medium mb-1">Average AI Confidence</p>
-            <p className="text-4xl font-black text-white tracking-tight">{MOCK_STATS.avgConfidence}%</p>
+            <p className="text-4xl font-black text-white tracking-tight">{stats.avgConfidence}%</p>
             <div className="mt-4 flex items-center gap-2 text-xs text-success font-semibold bg-success/10 w-max px-2 py-1 rounded-md">
               Model accuracy stable
             </div>
@@ -138,40 +146,14 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <MapIcon className="w-5 h-5 text-brand-400" />
-                Live City Map
+                Live Defect Map
               </h3>
               <span className="text-xs bg-surface-light border border-surface-border px-2 py-1 rounded text-slate-400">
-                New York, NY
+                Greater Cairo
               </span>
             </div>
             <div className="flex-1 w-full rounded-xl overflow-hidden border border-surface-border relative z-0">
-              <MapContainer 
-                center={[40.7128, -74.0060]} 
-                zoom={13} 
-                style={{ height: '100%', width: '100%' }}
-                zoomControl={false}
-              >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                />
-                {MOCK_MARKERS.map((marker) => (
-                  <Marker key={marker.id} position={marker.pos}>
-                    <Popup className="bg-surface border-surface-border text-white">
-                      <div className="p-1 min-w-[100px]">
-                        <p className="font-bold text-sm mb-2 text-white">{marker.type}</p>
-                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded font-bold border ${
-                          marker.severity === 'High' 
-                            ? 'bg-red-500/10 text-red-400 border-red-500/30' 
-                            : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
-                        }`}>
-                          {marker.severity} Severity
-                        </span>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+              <CityMap />
             </div>
           </div>
           

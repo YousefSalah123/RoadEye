@@ -1,10 +1,26 @@
-# Python
+# ─── RoadEye Project .gitignore ───
+
+# 1. Project-Specific Documentation & Unprofessional Files (CRITICAL)
+*.md
+!README.md
+Official_Project_Milestones/
+Team_Workloads/
+Reviewed/
+*.pptx
+*.mp4
+tree
+
+# 2. Python & Machine Learning
 __pycache__/
 *.py[cod]
 *.class
 *.so
 .Python
 env/
+venv/
+.venv/
+.env
+.env.*
 build/
 develop-eggs/
 dist/
@@ -20,25 +36,29 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Virtual Environments
-venv/
-.env
-.venv
-
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Project specific ignores (CRITICAL)
 data/
 logs/
 models/
 runs/
 *.pt
 *.onnx
+.ipynb_checkpoints/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# 3. Node.js & Mobile (Frontend)
+node_modules/
+.next/
+.expo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# 4. OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.tmp
+*.bak

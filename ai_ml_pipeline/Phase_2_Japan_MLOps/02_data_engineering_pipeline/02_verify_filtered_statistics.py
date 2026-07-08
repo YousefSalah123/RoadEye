@@ -6,7 +6,7 @@ from pathlib import Path
 # ==========================================
 # Define the absolute path to your YOLO labels directory.
 # We use raw strings (r"...") to handle Windows path slashes gracefully.
-LABELS_DIR = Path(r"D:\RoadEye\RDD2022_Japan\Japan\train\yolo_filtered\labels")
+LABELS_DIR = Path(r"D:\RoadEye DataSets\RDD2022_Japan\Japan\train\yolo_filtered\labels")
 
 # ==========================================
 # COUNTERS INITIALIZATION

@@ -5,13 +5,21 @@ from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
 import os
+
+# Load environment variables BEFORE importing app modules
+from dotenv import load_dotenv
+load_dotenv()
+
 import cv2
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.model import model_service
 from app.schemas import DetectionResponse
+from app.database import connect_db, close_db
+from app.routes import router as pipeline_router
 from app.utils import (
     ALLOWED_IMAGE_EXTENSIONS,
     ALLOWED_VIDEO_EXTENSIONS,
@@ -32,8 +40,13 @@ os.makedirs("testing_outputs", exist_ok=True)
 async def lifespan(_: FastAPI):
     setup_logging()
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    # Create directories for the trip/defect pipeline
+    Path("uploads").mkdir(parents=True, exist_ok=True)
+    Path("static/defects").mkdir(parents=True, exist_ok=True)
     model_service.load()
+    await connect_db()
     yield
+    close_db()
 
 
 app = FastAPI(
@@ -50,6 +63,12 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# ─── Register Trip/Defect Pipeline Routes ───────────────────────
+app.include_router(pipeline_router)
+
+# ─── Static Files (serving cropped defect images) ───────────────
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/health")

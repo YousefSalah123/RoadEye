@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera, Video, UploadCloud, AlertTriangle, Zap, CheckCircle, Activity, Image as ImageIcon, Film, Download } from 'lucide-react';
-import { detectImage, detectVideo } from '../services/api';
+import { detectImage, uploadTripDashboard, getTripStatus, getTripById } from '../services/api';
 
 const CLASS_MAP = {
   0: { label: 'Crack', color: '#06b6d4', severity: 'Medium' }, // Neon Cyan
@@ -66,7 +66,10 @@ export default function ManualAnalysisPage() {
 
     try {
       if (activeMode === 'image') {
-        if (!imageFile) return;
+        if (!imageFile) {
+          setIsProcessing(false);
+          return;
+        }
         if (imageFile.type.startsWith('video/')) {
           setError('Invalid file type: You uploaded a video in Image mode. Please switch to Video mode.');
           setIsProcessing(false);
@@ -80,44 +83,51 @@ export default function ManualAnalysisPage() {
           ...(CLASS_MAP[det.class_id] || { label: 'Unknown', color: '#FFFFFF', severity: 'Unknown' })
         }));
         setImageResults(mappedResults);
+        setIsProcessing(false);
       } else if (activeMode === 'video') {
-        if (!videoFile) return;
+        if (!videoFile) {
+          setIsProcessing(false);
+          return;
+        }
         if (videoFile.type.startsWith('image/')) {
           setError('Invalid file type: You uploaded an image in Video mode. Please switch to Image mode.');
           setIsProcessing(false);
           return;
         }
         
-        setProgress(30);
-        progressIntervalRef.current = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 90) {
+        setProgress(0);
+        const uploadResponse = await uploadTripDashboard(videoFile);
+        const tripId = uploadResponse.trip_id;
+
+        progressIntervalRef.current = setInterval(async () => {
+          try {
+            const statusData = await getTripStatus(tripId);
+            setProgress(statusData.progress || 0);
+
+            if (statusData.status === 'completed') {
               clearInterval(progressIntervalRef.current);
-              return 90;
+              const tripDetails = await getTripById(tripId);
+              if (tripDetails.analyzed_video_url) {
+                setVideoResults(`http://localhost:8000${tripDetails.analyzed_video_url}`);
+              }
+              setIsProcessing(false);
+            } else if (statusData.status === 'failed') {
+              clearInterval(progressIntervalRef.current);
+              setError("Processing failed on the server.");
+              setIsProcessing(false);
             }
-            return prev + 1;
-          });
-        }, 1000);
-
-        const response = await detectVideo(videoFile);
-        
-        clearInterval(progressIntervalRef.current);
-        setProgress(100);
-
-        const videoBlobUrl = URL.createObjectURL(response);
-        setVideoResults(videoBlobUrl);
+          } catch (err) {
+            console.error('Polling error', err);
+          }
+        }, 2000);
       }
     } catch (err) {
       clearInterval(progressIntervalRef.current);
       console.error('Full analysis error:', err);
-      // Wait to parse blob errors in case the backend sent JSON
       let errorMessage = err.message || "An unknown error occurred while connecting.";
       
-      if (err.message === "Network Error") {
-        errorMessage = "Processing is taking longer than expected. Please check the backend terminal for live progress.";
-      } else if (err.response?.data) {
+      if (err.response?.data) {
         if (err.response.data instanceof Blob) {
-          // If the response is a blob, we must read it as text
           try {
             const text = await err.response.data.text();
             const json = JSON.parse(text);
@@ -130,7 +140,6 @@ export default function ManualAnalysisPage() {
         }
       }
       setError(`Error: ${errorMessage}`);
-    } finally {
       setIsProcessing(false);
     }
   };
