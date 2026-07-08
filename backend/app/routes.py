@@ -198,3 +198,20 @@ async def get_stats():
         "cracks": cracks,
         "severity": severity_stats,
     }
+
+
+# =================================================================
+# GET /api/trips/{trip_id}/video — Serve Trip Video
+# =================================================================
+@router.get("/trips/{trip_id}/video")
+async def get_trip_video(trip_id: str):
+    """Serve the analyzed video for a given trip."""
+    from fastapi.responses import FileResponse
+    video_path = Path("static/analyzed_videos") / f"{trip_id}.mp4"
+    if not video_path.exists():
+        # Fallback to the original upload if analysis is not complete
+        video_path = Path("uploads") / f"{trip_id}.mp4"
+        if not video_path.exists():
+            raise HTTPException(status_code=404, detail="Video not found")
+    
+    return FileResponse(str(video_path), media_type="video/mp4")

@@ -8,6 +8,7 @@ Team_Workloads/
 Reviewed/
 *.pptx
 *.mp4
+!backend/static/analyzed_videos/TRP-20260421-001.mp4
 tree
 
 # 2. Python & Machine Learning
