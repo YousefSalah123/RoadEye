@@ -50,6 +50,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
+    root_path=os.getenv("RAILWAY_ENVIRONMENT_URL", ""),
     title="YOLOv8 Inference API",
     version="1.0.0",
     lifespan=lifespan,

@@ -96,11 +96,11 @@ export default function CityMap() {
         center={CAIRO_CENTER}
         zoom={DEFAULT_ZOOM}
         scrollWheelZoom={true}
-        style={{ height: '100%', width: '100%', backgroundColor: '#0f172a' }} // Tailwind slate-900
+        style={{ height: '100%', width: '100%', backgroundColor: '#f8fafc' }} 
       >
-        {/* Dark mode CartoDB map tiles */}
+        {/* Light & Colorful CartoDB map tiles */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 

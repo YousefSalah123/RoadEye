@@ -165,11 +165,11 @@ export default function TripDetailPage() {
                 <video 
                   controls 
                   className="w-full h-full object-contain"
-                  src={`http://127.0.0.1:8000/api/trips/${trip.id}/video`}
+                  src={`http://127.0.0.1:8000/api/trips/${trip.id}/video?v=${Date.now()}`}
                   onError={(e) => {
                     // Fallback visually if video endpoint is not explicitly set up yet or video is missing
                     e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
+                    e.target.nextSibling.style.display = 'flex';
                   }}
                 />
                 {/* Fallback overlay if video fails */}
@@ -195,14 +195,14 @@ export default function TripDetailPage() {
                 <MapPin className="w-4 h-4 text-success" />
                 <span className="text-sm font-semibold text-slate-200">Route Map — {trip.streetName}</span>
               </div>
-              <div className="relative h-48 bg-black z-0 overflow-hidden">
+              <div className="relative h-48 bg-slate-100 z-0 overflow-hidden">
                 <MapContainer 
                   center={mapCenter} 
                   zoom={15} 
-                  style={{ height: '100%', width: '100%', backgroundColor: '#000000' }}
+                  style={{ height: '100%', width: '100%', backgroundColor: '#f8fafc' }}
                 >
                   <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
                   {routePoints.length > 1 && (

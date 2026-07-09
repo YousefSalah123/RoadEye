@@ -5,10 +5,12 @@ import TripsPage from './pages/TripsPage';
 import TripDetailPage from './pages/TripDetailPage';
 import ManualAnalysisPage from './pages/ManualAnalysisPage';
 import SettingsPage from './pages/SettingsPage';
+import BackendFallbackWarning from './components/BackendFallbackWarning';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <BackendFallbackWarning />
       <Routes>
         <Route path="/" element={<AppShell />}>
           <Route index element={<DashboardPage />} />
